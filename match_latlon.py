@@ -19,9 +19,9 @@ def to_GPSIFD_format(value, type="lat"):
 
 #### 以下の部分を変更して、csvファイルのパスと写真ファイルのディレクトリを指定してください。 ####
 # csvファイルのパス
-csv_path = r"240901_撮影位置情報の収集（のと里山海道）.csv"
+csv_path = r"3_DEM作成\240901_撮影位置情報の収集（のと里山海道）.csv"
 # 写真ファイルのディレクトリ
-photo_dir = r"1963"
+photo_dir = r"3_DEM作成\のと里山街道周辺\Photo\1963"
 
 
 # パスをPathオブジェクトに変換
@@ -47,16 +47,19 @@ for photo_path in photo_paths:
     # photo_nameがcsv_dataのファイル名と一致する行を検索
     photo_data = csv_data[csv_data["ファイル名"] == photo_name]
     if len(photo_data) == 0:
-        print(f"{photo_name} is not found.")
+        print(f"{photo_name} は見つかりませんでした")
         continue
     else:
-        print(f"{photo_name} is found.", end=" ")
+        print(f"{photo_name} は見つかりました。", end=" ")
 
     # 緯度、経度、高度を取得して、GPSIFDのフォーマットに変換
     temp_lat = to_GPSIFD_format(photo_data["緯度"].values[0], type="lat")
     temp_lon = to_GPSIFD_format(photo_data["経度"].values[0], type="lon")
     temp_alt = to_GPSIFD_format(photo_data["高度"].values[0], type="alt")
-
+    print("緯度", photo_data["緯度"].values[0],
+          "経度", photo_data["経度"].values[0],
+          "高度", photo_data["高度"].values[0])
+    
     # exif情報を書き換え
     exif_dict = piexif.load(str(photo_path))
     exif_dict["GPS"][piexif.GPSIFD.GPSLatitude] = temp_lat
